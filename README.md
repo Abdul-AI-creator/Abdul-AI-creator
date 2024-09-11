@@ -1,6 +1,6 @@
-- 👋 Hi, I’m Abdul Raheem, I am student of Aritficial Intellingence in University. 
-- 👀 I’m interested in Machine learning ,Data Science skills.
-- 🌱 I’m currently learning Python ,MySQL ,Machine Learning
+- 👋 Hi, I’m Abdul Raheem, I am working on major topics Aritficial Intellingence. 
+- 👀 I’m working in Machine learning ,Data Science skills.
+- 🌱 I’m currently working with Python ,MySQL ,Machine Learning
 - 💞️ I’m looking to collaborate on Machine Learning and Deep Learning models.
 - 📫 You can reach me Through Linkdln,peopleperhour,fiverr,freelancerand Upwork profile
   
