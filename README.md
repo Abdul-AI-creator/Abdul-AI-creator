@@ -1,11 +1,12 @@
-- 👋 Hi, I’m Abdul Raheem, I am working on major topics Aritficial Intellingence. 
-- 👀 I’m working in Machine learning ,Data Science skills.
-- 🌱 I’m currently working with Python ,MySQL ,Machine Learning
-- 💞️ I’m looking to collaborate on Machine Learning and Deep Learning models.
-- 📫 You can reach me Through Linkdln,peopleperhour,fiverr,freelancerand Upwork profile
-  
+- 👋 Hi, I’m Abdul Raheem seasoned Data Scientist.
+**Skill Breakdown:**
 
-<!---
-Abdul-AI-creator/Abdul-AI-creator is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+📊 **Data Analysis:** Techniques for removing inaccuracies, organizing data, and deriving insights.
+📈 **Data Engineering:** Building and optimizing ETL pipelines, data workflows, and structures.
+🤖 **Machine Learning:** Developing regression, classification, and clustering models.
+🐍 **Python:** Expertise with libraries like NumPy, pandas, and Matplotlib for data manipulation.
+📊 **Data Visualization:** Crafting clear visual reports using Tableau, Power BI, and Plotly.
+🔍 **Data Preprocessing:** Cleaning and transformation to prepare data for analysis.
+🧬 **Feature Engineering:** Enhancing model efficiency through thoughtful feature selection.
+💾 **Database Management:** Utilizing SQL, PostgreSQL for database optimization and querying.
+🔄 **Model Deployment:** Delivering scalable solutions through effective deployment strategies.
