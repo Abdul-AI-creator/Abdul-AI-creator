@@ -5,7 +5,6 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-import pandas as pd
 import streamlit as st
 
 from leadwin_rag.cli import load_leads
@@ -69,18 +68,16 @@ elif run_button:
         plans = [generator.generate(lead) for lead in leads]
 
     st.success(f"Generated {len(plans)} lead plans.")
-    summary = pd.DataFrame(
-        [
-            {
-                "Company": plan.lead.company,
-                "Industry": plan.lead.industry,
-                "Contact": plan.lead.contact_name,
-                "Fit Score": plan.fit_score,
-                "Top Source": plan.retrieved_context[0].source if plan.retrieved_context else "",
-            }
-            for plan in plans
-        ]
-    )
+    summary = [
+        {
+            "Company": plan.lead.company,
+            "Industry": plan.lead.industry,
+            "Contact": plan.lead.contact_name,
+            "Fit Score": plan.fit_score,
+            "Top Source": plan.retrieved_context[0].source if plan.retrieved_context else "",
+        }
+        for plan in plans
+    ]
     st.dataframe(summary, use_container_width=True, hide_index=True)
 
     for plan in plans:

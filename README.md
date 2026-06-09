@@ -24,11 +24,15 @@ leadwin_rag/
   generator.py     # Lead scoring, outreach, and proposal generation
   models.py        # Lead, retrieved context, and generated plan models
   cli.py           # Batch command-line workflow
-app.py             # Optional Streamlit UI
+  service.py       # Shared service helpers for APIs and web deployments
+api/generate.py    # Vercel Python serverless endpoint
+public/index.html  # Vercel browser UI
+app.py             # Optional local Streamlit UI
 data/
   sample_knowledge # Example agency playbook and case studies
   sample_leads.csv # Example prospects
 tests/             # RAG pipeline tests
+vercel.json        # Vercel routing and function config
 ```
 
 ## Setup
@@ -57,6 +61,24 @@ streamlit run app.py
 ```
 
 Upload agency knowledge files and a leads CSV, then click **Generate lead plans**.
+
+## Deploy on Vercel
+
+The Vercel deployment uses `public/index.html` for the browser UI and `api/generate.py` for the Python serverless RAG endpoint.
+
+Preview deploy:
+
+```bash
+npx vercel
+```
+
+Production deploy:
+
+```bash
+npx vercel --prod
+```
+
+If you deploy from the Vercel dashboard, import this repository and keep the default framework preset. Vercel will serve the static UI and the `/api/generate` function from the repository root.
 
 ## Leads CSV format
 
@@ -94,4 +116,4 @@ pytest
 
 ## Notes for production use
 
-This implementation uses scikit-learn TF-IDF retrieval so it can run locally without paid APIs. For larger production deployments, the `KnowledgeBase` class can be swapped for neural embeddings and a hosted vector database while keeping the lead-generation interface intact.
+This implementation uses pure-Python TF-IDF retrieval so it can run locally and on Vercel without paid APIs or compiled ML dependencies. For larger production deployments, the `KnowledgeBase` class can be swapped for neural embeddings and a hosted vector database while keeping the lead-generation interface intact.

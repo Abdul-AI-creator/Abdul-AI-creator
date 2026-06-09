@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LeadWin RAG</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f8fb;
+        --card: #ffffff;
+        --ink: #172033;
+        --muted: #657083;
+        --brand: #365cff;
+        --brand-dark: #2644bf;
+        --border: #dce2ec;
+        --soft: #eef2ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 45%);
+        color: var(--ink);
+      }
+
+      header,
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      header {
+        padding: 52px 0 28px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 5vw, 4rem);
+        letter-spacing: -0.06em;
+      }
+
+      h2 {
+        margin: 0 0 14px;
+        font-size: 1.2rem;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .hero-copy {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        border-radius: 28px;
+        padding: 34px;
+        box-shadow: 0 24px 70px rgba(35, 56, 130, 0.12);
+      }
+
+      .hero-copy p {
+        max-width: 780px;
+        font-size: 1.08rem;
+      }
+
+      .stats {
+        display: grid;
+        gap: 14px;
+      }
+
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 22px;
+        box-shadow: 0 18px 50px rgba(35, 56, 130, 0.08);
+      }
+
+      .stat strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1.5rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin: 22px 0;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 16px 48px rgba(35, 56, 130, 0.08);
+      }
+
+      label {
+        display: block;
+        margin: 14px 0 8px;
+        font-weight: 700;
+      }
+
+      input[type="file"],
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #ffffff;
+        color: var(--ink);
+        font: inherit;
+      }
+
+      input[type="file"],
+      select {
+        padding: 12px;
+      }
+
+      textarea {
+        min-height: 230px;
+        padding: 14px;
+        resize: vertical;
+        line-height: 1.45;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin: 18px 0 32px;
+      }
+
+      button,
+      .download {
+        border: 0;
+        border-radius: 999px;
+        background: var(--brand);
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: 800;
+        padding: 13px 20px;
+        text-decoration: none;
+        transition: background 160ms ease;
+      }
+
+      button:hover,
+      .download:hover {
+        background: var(--brand-dark);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
+      .ghost {
+        background: #e8edff;
+        color: var(--brand-dark);
+      }
+
+      .ghost:hover {
+        background: #dce4ff;
+      }
+
+      .status {
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .results {
+        display: grid;
+        gap: 18px;
+        margin-bottom: 60px;
+      }
+
+      .result-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 16px 48px rgba(35, 56, 130, 0.08);
+      }
+
+      .result-head {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .score {
+        display: inline-grid;
+        place-items: center;
+        min-width: 74px;
+        height: 42px;
+        border-radius: 999px;
+        background: var(--soft);
+        color: var(--brand-dark);
+        font-weight: 900;
+      }
+
+      pre {
+        white-space: pre-wrap;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px;
+        overflow: auto;
+      }
+
+      ul {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      details {
+        margin-top: 10px;
+      }
+
+      summary {
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      @media (max-width: 860px) {
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          padding-top: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="hero">
+        <section class="hero-copy">
+          <h1>LeadWin RAG</h1>
+          <p>
+            Generate qualified lead plans, personalized cold emails, discovery questions,
+            proposal angles, and next steps using your agency knowledge base.
+          </p>
+        </section>
+        <aside class="stats">
+          <div class="stat">
+            <strong>RAG</strong>
+            <span>Retrieves your case studies and playbooks before generating.</span>
+          </div>
+          <div class="stat">
+            <strong>CSV</strong>
+            <span>Upload prospects and score them in batches.</span>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <section class="grid">
+        <div class="card">
+          <h2>1. Agency knowledge</h2>
+          <p>Upload or paste playbooks, case studies, offers, testimonials, and objection notes.</p>
+          <label for="knowledgeFiles">Upload knowledge files</label>
+          <input id="knowledgeFiles" type="file" accept=".md,.txt,.csv" multiple />
+          <label for="knowledgeText">Or paste knowledge text</label>
+          <textarea id="knowledgeText" placeholder="Paste your agency playbook, case studies, service offer, or sales notes..."></textarea>
+        </div>
+
+        <div class="card">
+          <h2>2. Leads CSV</h2>
+          <p>Recommended columns: company, industry, website, contact_name, title, pain_points, description.</p>
+          <label for="leadsFile">Upload leads CSV</label>
+          <input id="leadsFile" type="file" accept=".csv" />
+          <label for="leadsText">Or paste leads CSV</label>
+          <textarea id="leadsText" placeholder="company,industry,website,contact_name,title,pain_points,description"></textarea>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3. Generate client-winning plans</h2>
+        <label for="topK">Retrieved context chunks</label>
+        <select id="topK">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+        </select>
+        <div class="actions">
+          <button id="generate">Generate lead plans</button>
+          <button id="loadSample" class="ghost">Load sample data</button>
+          <a id="download" class="download" hidden download="leadwin_report.md">Download report</a>
+          <span id="status" class="status"></span>
+        </div>
+      </section>
+
+      <section id="results" class="results" aria-live="polite"></section>
+    </main>
+
+    <script>
+      const sampleKnowledge = `# Agency Playbook
+
+LeadWin Agency helps B2B companies build predictable outbound sales pipelines. The agency combines ideal customer profile research, account-list building, buying-trigger research, personalized cold email, LinkedIn touchpoints, and weekly campaign optimization.
+
+The best clients sell high-ticket B2B services or software, have a defined market, and can handle additional sales calls. Strong fits include SaaS companies, cybersecurity vendors, managed service providers, consulting firms, logistics providers, and specialist professional services.
+
+Prospects usually ask for help when inbound is inconsistent, paid ads are expensive, referrals are unpredictable, or sales teams waste time on unqualified meetings. The strongest buying signals are a need for qualified leads, sales-qualified opportunities, booked demos, pipeline growth, and better conversion from outbound campaigns.
+
+A cybersecurity SaaS client used a trigger-based outbound campaign to book 31 qualified demos in 90 days while reducing poor-fit meetings. A managed services provider used industry-specific messaging to generate 18 sales-qualified opportunities from mid-market manufacturing accounts.`;
+
+      const sampleLeads = `company,industry,website,contact_name,title,pain_points,description
+CloudFence,SaaS cybersecurity,https://cloudfence.example,Maya Patel,VP Sales,Needs more qualified enterprise demos and stronger outbound conversion,Security platform selling to compliance-heavy buyers
+Northstar IT Partners,Managed services,https://northstarit.example,Daniel Brooks,Founder,Referrals are unpredictable and sales team needs more SQLs,MSP focused on manufacturing and logistics companies`;
+
+      const state = {
+        report: "",
+      };
+
+      const byId = (id) => document.getElementById(id);
+
+      async function readFiles(input) {
+        const files = Array.from(input.files || []);
+        return Promise.all(
+          files.map(async (file) => ({
+            name: file.name,
+            content: await file.text(),
+          })),
+        );
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function renderList(items) {
+        return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+      }
+
+      function renderResults(plans) {
+        const results = byId("results");
+        results.innerHTML = plans
+          .map(
+            (plan) => `
+              <article class="result-card">
+                <div class="result-head">
+                  <div>
+                    <h2>${escapeHtml(plan.company || "Unknown company")}</h2>
+                    <p>${escapeHtml(plan.industry || "Unknown industry")} ${plan.contact_name ? "- " + escapeHtml(plan.contact_name) : ""}</p>
+                  </div>
+                  <span class="score">${plan.fit_score}/100</span>
+                </div>
+                <h3>Why pursue</h3>
+                <p>${escapeHtml(plan.rationale)}</p>
+                <h3>Outreach email</h3>
+                <pre>${escapeHtml(plan.outreach_email)}</pre>
+                <h3>Discovery questions</h3>
+                ${renderList(plan.discovery_questions)}
+                <h3>Proposal angles</h3>
+                ${renderList(plan.proposal_angles)}
+                <details>
+                  <summary>Retrieved context</summary>
+                  ${plan.retrieved_context
+                    .map(
+                      (chunk) => `
+                        <p><strong>${escapeHtml(chunk.source)}</strong> (${chunk.score})</p>
+                        <pre>${escapeHtml(chunk.text)}</pre>
+                      `,
+                    )
+                    .join("")}
+                </details>
+              </article>
+            `,
+          )
+          .join("");
+      }
+
+      function setStatus(message, isError = false) {
+        const status = byId("status");
+        status.textContent = message;
+        status.style.color = isError ? "#b42318" : "";
+      }
+
+      byId("loadSample").addEventListener("click", () => {
+        byId("knowledgeText").value = sampleKnowledge;
+        byId("leadsText").value = sampleLeads;
+        setStatus("Sample data loaded.");
+      });
+
+      byId("generate").addEventListener("click", async () => {
+        const button = byId("generate");
+        const download = byId("download");
+        button.disabled = true;
+        download.hidden = true;
+        setStatus("Generating...");
+
+        try {
+          const uploadedKnowledge = await readFiles(byId("knowledgeFiles"));
+          const pastedKnowledge = byId("knowledgeText").value.trim();
+          const knowledge = [...uploadedKnowledge];
+          if (pastedKnowledge) {
+            knowledge.push({ name: "pasted-knowledge.txt", content: pastedKnowledge });
+          }
+
+          const uploadedLeadFiles = await readFiles(byId("leadsFile"));
+          const leadsCsv =
+            uploadedLeadFiles[0]?.content || byId("leadsText").value.trim();
+
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              knowledge,
+              leads_csv: leadsCsv,
+              top_k: Number(byId("topK").value),
+            }),
+          });
+
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload.error || "Generation failed");
+          }
+
+          state.report = payload.markdown_report;
+          renderResults(payload.plans);
+          const blob = new Blob([state.report], { type: "text/markdown" });
+          download.href = URL.createObjectURL(blob);
+          download.hidden = false;
+          setStatus(`Generated ${payload.plans.length} lead plan(s).`);
+        } catch (error) {
+          setStatus(error.message, true);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
